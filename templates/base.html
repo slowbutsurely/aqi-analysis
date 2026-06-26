@@ -1,0 +1,178 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>基于Python的空气质量数据分析与预测系统</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Place favicon.ico in the root directory -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'home/images/favicon.ico' %}">
+    <link rel="apple-touch-icon" href="{% static 'home/apple-touch-icon.png' %}">
+
+
+    <!-- All css files are included here. -->
+    <!-- Bootstrap fremwork main css -->
+    <link rel="stylesheet" href="{% static 'home/css/bootstrap.min.css' %}">
+    <!-- Owl Carousel min css -->
+    <link rel="stylesheet" href="{% static 'home/css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/owl.theme.default.min.css' %}">
+    <!-- This core.css file contents all plugings css file. -->
+    <link rel="stylesheet" href="{% static 'home/css/core.css' %}">
+    <!-- Theme shortcodes/elements style -->
+    <link rel="stylesheet" href="{% static 'home/css/shortcode/shortcodes.css' %}">
+    <!-- Theme main style -->
+    <link rel="stylesheet" href="{% static 'home/css/style.css' %}">
+    <!-- Responsive css -->
+    <link rel="stylesheet" href="{% static 'home/css/responsive.css' %}">
+    <!-- User style -->
+    <link rel="stylesheet" href="{% static 'home/css/custom.css' %}">
+
+
+    <!-- Modernizr JS -->
+    <script src="{% static 'home/js/vendor/modernizr-3.5.0.min.js' %}"></script>
+</head>
+
+<body>
+    <!-- Body main wrapper start -->
+    <div class="wrapper">
+        <!-- Start Header Style -->
+        <header id="htc__header" class="htc__header__area header--one">
+            <!-- Start Mainmenu Area -->
+            <div id="sticky-header-with-topbar" class="mainmenu__wrap sticky__header">
+                <div class="container">
+                    <div class="row">
+                        <div class="menumenu__container clearfix">
+                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-5">
+                                <div class="logo">
+                                     <h5>空气质量数据分析与预测系统</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-7 col-lg-8 col-sm-5 col-xs-3">
+                                <nav class="main__menu__nav hidden-xs hidden-sm">
+                                    <ul class="main__menu">
+                                        <li class="drop"><a href="{% url 'home:index' %}"><i class="fa fa-home"></i>首页</a></li>
+                                        <li class="drop"><a href="{% url 'home:changeInfo' %}"><i class="fa fa-user"></i>个人信息管理</a></li>
+                                        <li class="drop"><a href="{% url 'home:data_list' %}"><i class="fa fa-table"></i>数据展示</a></li>
+
+                                        <li class="drop"><a href="#"><i class="fa fa-chain"></i>数据分析</a>
+                                            <ul class="dropdown">
+                                                <li><a href="{% url 'home:part1' %}">年度分析</a></li>
+                                                <li><a href="{% url 'home:part2' %}">月度分析</a></li>
+                                                <li><a href="{% url 'home:part3' %}">气体分析</a></li>
+                                                <li><a href="{% url 'home:part4' %}">城市分析</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="drop"><a href="{% url 'home:forecast' %}"><i class="fa fa-chart-simple"></i>空气质量预测</a>
+                                        <li class="drop"><a href="{% url 'home:get_qianfan' %}"><i class="fa fa-chart-simple"></i>AI空气质量分析及预测</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+
+
+                            </div>
+                            <div class="col-md-3 col-lg-2 col-sm-4 col-xs-4">
+                                <div class="header__right">
+                                    <div class="header__account">
+                                       {% if request.session.avatar %}
+                                           <div class="user-dropdown">
+                                               <img src="{{ MEDIA_URL }}{{ request.session.avatar }}" alt="用户头像"
+                                                    class="user-avatar" id="userAvatar">
+
+                                               <div class="user-menu" id="userMenu">
+                                                   <a href="{% url 'home:changeInfo' %}" style="font-size: 12px;">
+                                                       <i class="fa fa-user"></i>个人信息管理
+                                                   </a>
+                                                   <div class="user-divider"></div>
+                                                   <a href="{% url 'home:changeInfo' %}" style="font-size: 12px;color: red;">
+                                                       <i class="fa fa-sign-out"></i>退出登录
+                                                   </a>
+                                               </div>
+                                           </div>
+                                       {% endif %}
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Mainmenu Area -->
+        </header>
+        <!-- End Header Area -->
+
+        <div class="body__overlay"></div>
+
+
+        {% block content %}
+
+        {% endblock %}
+
+         <!-- End Blog Area -->
+        <!-- End Banner Area -->
+        <!-- Start Footer Area -->
+        <footer id="htc__footer">
+            <!-- Start Copyright Area -->
+            <div class="htc__copyright bg__cat--5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="copyright__inner">
+                                <p><a target="_blank" href="" title=""></a> </p>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Copyright Area -->
+        </footer>
+        <!-- End Footer Style -->
+    </div>
+    <!-- Body main wrapper end -->
+
+    <!-- Placed js at the end of the document so the pages load faster -->
+
+    <!-- jquery latest version -->
+    <script src="{% static 'home/js/vendor/jquery-3.2.1.min.js' %}"></script>
+    <!-- Bootstrap framework js -->
+    <script src="{% static 'home/js/bootstrap.min.js' %}"></script>
+    <!-- All js plugins included in this file. -->
+    <script src="{% static 'home/js/plugins.js' %}"></script>
+    <script src="{% static 'home/js/slick.min.js' %}"></script>
+    <script src="{% static 'home/js/owl.carousel.min.js' %}"></script>
+    <!-- Waypoints.min.js. -->
+    <script src="{% static 'home/js/waypoints.min.js' %}"></script>
+    <!-- Main js file that contents all jQuery plugins activation. -->
+    <script src="{% static 'home/js/main.js'%}"></script>
+    <script>
+           // 用户头像下拉菜单控制
+           document.addEventListener('DOMContentLoaded', function () {
+               const avatar = document.getElementById('userAvatar');
+               const menu = document.getElementById('userMenu');
+
+               if (avatar && menu) {
+                   // 点击头像显示/隐藏菜单
+                   avatar.addEventListener('click', function (e) {
+                       e.stopPropagation();
+                       menu.classList.toggle('show');
+                   });
+
+                   // 点击页面其他位置隐藏菜单
+                   document.addEventListener('click', function () {
+                       menu.classList.remove('show');
+                   });
+
+                   // 阻止菜单内部的点击事件冒泡
+                   menu.addEventListener('click', function (e) {
+                       e.stopPropagation();
+                   });
+               }
+           });
+    </script>
+
+</body>
+
+</html>

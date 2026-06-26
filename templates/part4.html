@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="profile-container" style="...">
+    <div class="profile-header">
+        <h2>城市分析</h2>
+    </div>
+
+    <form id="analysisForm" action="{% url 'home:part4' %}" method="post">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group">
+                <label for="year">选择年份</label>
+                <select name="year" id="year" class="form-control">
+                    {% for year in yearList %}
+                    <option value="{{ year }}" {% if year == select_year %}selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="month">选择月份</label>
+                <select name="month" id="month" class="form-control">
+                    {% for month in monthList %}
+                    <option value="{{ month }}" {% if month == select_month %}selected{% endif %}>{{ month }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">提交</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="grid-container">
+        <div class="grid-box">
+            <div class="grid-content">
+                <h3>{{ select_month }}月-{{ select_year }}城市AQI均值分布</h3>
+                <div id="part9" style="width: 100%;height: 500px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@4.8.0/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@4.8.0/map/js/china.js"></script>
+
+<script>
+$(function(){
+    var mapChart = echarts.init(document.getElementById('part9'));
+
+    // 城市经纬度库
+    var cityGeo = {
+        '北京': [116.403874, 39.914885],
+        '上海': [121.473701, 31.230416],
+        '广州': [113.264385, 23.129110],
+        '深圳': [114.057868, 22.543096],
+        '杭州': [120.153576, 30.287459],
+        '南京': [118.796877, 32.060255],
+        '成都': [104.065812, 30.659419],
+        '武汉': [114.305539, 30.593098],
+        '西安': [108.939635, 34.342714],
+        '重庆': [106.551559, 29.563009]
+    };
+
+    var rawData = {{ result|safe }};
+
+    var option = {
+        visualMap: {
+            min: 0,
+            max: 300,
+            left: 'left',
+            bottom: '5%',
+            text: ['高AQI值', '低AQI值'],
+            calculable: true,
+            inRange: {
+                color: ['#0a3d86', '#c92a2a', '#ffd43b']
+            }
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter: '{b}<br/>AQI：{c}'
+        },
+        geo: {
+            map: 'china',
+            roam: false,
+            zoom: 1.2,
+            itemStyle: {
+                areaColor: '#0a3d86',
+                borderColor: '#ffffff'
+            },
+            label: { show: false }
+        },
+        series: [
+            {
+                name: 'AQI均值',
+                type: 'effectScatter',
+                coordinateSystem: 'geo',
+                symbolSize: function(val) {
+                    return val[2] / 10;
+                },
+                itemStyle: { color: '#ff8833' },
+                data: function(){
+                    var data = rawData;
+                    if (!data || !Array.isArray(data)) {
+                        data = [];
+                    }
+
+                    var showData = [];
+                    for(var i=0; i<data.length; i++){
+                        var city = data[i].name;
+                        var aqi = data[i].value;
+                        if(cityGeo.hasOwnProperty(city) && !isNaN(aqi)){
+                            showData.push({
+                                name: city,
+                                value: [cityGeo[city][0], cityGeo[city][1], aqi]
+                            });
+                        }
+                    }
+                    return showData;
+                }()
+            }
+        ]
+    };
+
+    mapChart.setOption(option);
+    $(window).resize(function(){
+        mapChart.resize();
+    })
+});
+</script>
+
+{% endblock %}

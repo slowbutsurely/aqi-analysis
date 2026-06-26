@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="profile-container" style="...">
+    <div class="profile-header">
+        <h2>年度分析</h2>
+    </div>
+
+    <form id="analysisForm" action="{% url 'home:part1' %}" method="post">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group">
+                <label for="city">选择城市</label>
+                <select name="city" id="city" class="form-control">
+                    {% for city in cityList %}
+                    <option value="{{ city }}" {% if city == select_city %}selected{% endif %}>{{ city }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="year">选择年份</label>
+                <select name="year" id="year" class="form-control">
+                    {% for year in yearList %}
+                    <option value="{{ year }}" {% if year == select_year %}selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">提交</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="grid-container">
+        <div class="grid-box">
+            <div class="grid-content">
+                <h3>{{ select_city }}-{{ select_year }}AQI分析</h3>
+                <div id="part3" style="width: 100%;height: 500px;"></div>
+            </div>
+        </div>
+
+        <div class="grid-box">
+            <div class="grid-content">
+                <h3>{{ select_city }}-{{ select_year }}PM颗粒物分析</h3>
+                <div id="part4" style="width: 100%;height: 500px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+
+<script>
+    // 页面加载完成后执行
+    $(function () {
+        // ------------------------------
+        // 图表1：AQI 分析（已清理垃圾代码）
+        // ------------------------------
+        var chart3 = echarts.init(document.getElementById('part3'));
+        chart3.setOption({
+            tooltip: { trigger: 'axis' },
+            legend: { data: ['最高AQI', '最低AQI'] },
+            grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+            xAxis: { type: 'category', boundaryGap: false, data: {{ month_list1|safe }} },
+            yAxis: { type: 'value' },
+            series: [
+                { name: '最高AQI', type: 'line', stack: 'Total', data: {{ max_aqi1|safe }} },
+                { name: '最低AQI', type: 'line', stack: 'Total', data: {{ min_aqi1|safe }} }
+            ]
+        });
+
+        // ------------------------------
+        // 图表2：PM 颗粒物分析
+        // ------------------------------
+        var chart4 = echarts.init(document.getElementById('part4'));
+        chart4.setOption({
+            color: ['#80FFA5', '#00DDFF'],
+            tooltip: { trigger: 'axis', axisPointer: { type: 'cross', label: { backgroundColor: '#6a7985' } } },
+            legend: { data: ['平均PM2.5', '平均PM10'] },
+            toolbox: { feature: { saveAsImage: {} } },
+            xAxis: { type: 'category', boundaryGap: false, data: {{ month_list2|safe }} },
+            yAxis: { type: 'value' },
+            series: [
+                {
+                    name: '平均PM2.5', type: 'line', stack: 'Total', smooth: true,
+                    lineStyle: { width: 0 },
+                    areaStyle: {
+                        opacity: 0.8,
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: '#80FFA5' },
+                            { offset: 1, color: '#80FFA5' }
+                        ])
+                    },
+                    data: {{ avg_PM|safe }}
+                },
+                {
+                    name: '平均PM10', type: 'line', stack: 'Total', smooth: true,
+                    lineStyle: { width: 0 },
+                    areaStyle: {
+                        opacity: 0.8,
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: '#00DDFF' },
+                            { offset: 1, color: '#00DDFF' }
+                        ])
+                    },
+                    data: {{ avg_PM10|safe }}
+                }
+            ]
+        });
+
+        // 自适应窗口
+        $(window).resize(function () {
+            chart3.resize();
+            chart4.resize();
+        });
+    });
+</script>
+
+{% endblock %}

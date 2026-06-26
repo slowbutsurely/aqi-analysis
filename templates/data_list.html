@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <section class="data-overview">
+      <div class="container">
+
+
+           <form method="get" class="search-form">
+            <div class="search-controls">
+                <input type="text" name="city" placeholder="城市" value="{{ search_city }}">
+                <input type="number" name="year" placeholder="年份" value="{{ search_year }}">
+                <input type="text" name="airQuality" placeholder="空气质量" value="{{ search_airQuality }}">
+                <button type="submit">搜索</button>
+                <a href="{% url 'home:data_list' %}" class="reset-btn">重置</a>
+            </div>
+        </form>
+           <table class="data-table">
+             <thead>
+                 <tr>
+                     <th>城市</th>
+                     <th>日期</th>
+                     <th>空气质量等级</th>
+                     <th>AQI指数</th>
+                     <th>排名</th>
+                     <th>PM2.5</th>
+                     <th>PM10</th>
+                     <th>So2</th>
+                     <th>No2</th>
+                     <th>Co</th>
+                     <th>O3</th>
+                 </tr>
+             </thead>
+             <tbody>
+             {% for item in page_obj %}
+                 <tr>
+                     <td>{{ item.city }}</td>
+                     <td>{{ item.date }}</td>
+                     <td>{{ item.airQuality }}</td>
+                     <td>{{ item.AQI }}</td>
+                     <td>{{ item.rank }}</td>
+                     <td>{{ item.PM }}</td>
+                     <td>{{ item.PM10 }}</td>
+                     <td>{{ item.So2 }}</td>
+                     <td>{{ item.No2 }}</td>
+                     <td>{{ item.Co }}</td>
+                     <td>{{ item.O3 }}</td>
+                 </tr>
+             {% endfor %}
+             </tbody>
+        </table>
+           <!-- 分页 -->
+           <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page=1{% if search_city %}&city={{ search_city }}{% endif %}{% if search_year %}&year={{ search_year }}{% endif %}{% if search_airQuality %}&airQuality={{ search_airQuality }}{% endif %}">首页</a>
+                <a href="?page={{ page_obj.previous_page_number }}{% if search_city %}&city={{ search_city }}{% endif %}{% if search_year %}&year={{ search_year }}{% endif %}{% if search_airQuality %}&airQuality={{ search_airQuality }}{% endif %}">上一页</a>
+            {% endif %}
+
+            <span class="current">第 {{ page_obj.number }} 页 / 共 {{ page_obj.paginator.num_pages }} 页</span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if search_city %}&city={{ search_city }}{% endif %}{% if search_year %}&year={{ search_year }}{% endif %}{% if search_airQuality %}&airQuality={{ search_airQuality }}{% endif %}">下一页</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% if search_city %}&city={{ search_city }}{% endif %}{% if search_year %}&year={{ search_year }}{% endif %}{% if search_airQuality %}&airQuality={{ search_airQuality }}{% endif %}">末页</a>
+            {% endif %}
+        </div>
+      </div>
+
+    </section>
+
+{% endblock %}

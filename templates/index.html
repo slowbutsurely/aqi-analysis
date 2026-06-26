@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- Start Blog Area -->
+        <section class="htc__blog__area bg__white ptb--100">
+            <div class="container">
+
+                    <div class="htc__product_container">
+                        <div class="row">
+                              <div class="col-md-4">
+                                  <div class="panel panel-default" style="height: calc(50% - 10px);">
+                                     <div class="panel-heading">
+                                         <h3 class="panel-title">数据选择</h3>
+                                     </div>
+                            <div class="panel-body">
+                                <form id="airQualityForm" method="GET" action="{% url 'home:get_air_quality' %}">
+                                    <div class="form-group">
+                                        <label for="citySelect1">城市</label>
+                                        <select class="form-control" name="city" id="citySelect1" required>
+                                             <option value="">请选择城市</option>
+                                              {% for city in cityList %}
+                                                  <option value="{{ city }}" {% if city == default_city %}selected{% endif %}>{{ city }}</option>
+                                              {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="yearSelect">年份</label>
+                                        <select class="form-control" name="year" id="yearSelect" required>
+                                             <option value="">请选择年份</option>
+                                              {% for year in yearList %}
+                                                  <option value="{{ year }}"
+                                                          {% if year == default_date.year|stringformat:"s" %}
+                                                  selected {% endif %}>{{ year }}</option>
+                                              {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="monthSelect">月份</label>
+                                        <select class="form-control" name="month" id="monthSelect" required>
+                                             <option value="">请选择月份</option>
+                                              {% for month in monthList %}
+                                                  <option value="{{ month }}"
+                                                          {% if month == default_date.month|stringformat:"02d" %}
+                                                          selected{% endif %}>{{ month }}</option>
+                                              {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="daySelect">日期</label>
+                                        <select class="form-control" name="day" id="daySelect" required>
+                                             <option value="">请选择日期</option>
+                                              {% for day in dayList %}
+                                                  <option value="{{ day }}" {% if day == default_date.day|stringformat:"02d" %}
+                                                          selected{% endif %}>{{ day }}</option>
+                                              {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary" >查询</button>
+
+
+                                </form>
+                            </div>
+                        </div>
+                                  <div class="panel panel-default" style="height: calc(50% - 10px);">
+                                          <div class="panel-heading">
+                                                <h3 class="panel-title">城市空气质量概览</h3>
+                                          </div>
+                                         <div class="panel-body" id="airQualityPanel">
+                                            {% if air_quality_data %}
+                                               <div class="air-quality-info">
+                                                  <div class="air-quality-level" style="color:
+                                                      {% if default_air_quality.AQI <= 50 %}#4CAF50
+                                                      {% elif default_air_quality.AQI <= 100 %}#FFC107
+                                                      {% elif default_air_quality.AQI <= 150 %}#FF9800
+                                                      {% elif default_air_quality.AQI <= 200 %}#F44336
+                                                      {% elif default_air_quality.AQI <= 300 %}#9C27B0
+                                                      {% else %}#795548
+                                                      {% endif %}">
+                                                      {{air_quality_data.airquality }}AQI{{air_quality_data.AQI}}
+                                                   </div>
+
+                                                    <div class="air-quality-details">
+                                                       <div class="row">
+                                                           <div class="col-md-6">
+                                                               <p>PM2.5:<strong>{{ air_quality_data.PM }}</strong></p>
+                                                               <p>PM10:<strong>{{ air_quality_data.PM10 }}</strong></p>
+                                                               <p>SO2:<strong>{{ air_quality_data.So2 }}</strong></p>
+                                                           </div>
+                                                           <div class="col-md-6">
+                                                               <p>NO2:<strong>{{ air_quality_data.No2 }}</strong></p>
+                                                               <p>CO:<strong>{{ air_quality_data.Co }}</strong></p>
+                                                               <p>O3:<strong>{{ air_quality_data.O3 }}</strong></p>
+                                                           </div>
+                                                       </div>
+                                                    </div>
+                                                </div>
+
+                                             {% endif %}
+                                         </div>
+
+                                  </div>
+                              </div>
+                            <div class="col-md-8">
+                                <div class="panel panel-default" style="height: 100%">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">各城市平均AQI指数</h3>
+                                    </div>
+                                    <div class="panel-body chart-container">
+                                        <div id="part1" style="width: 100%;height: 600px;"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="panel panel-default">
+                                    <div class="panel panel-heading">
+                                        <h3 class="panel-title">分析城市选择</h3>
+                                    </div>
+                                    <div class="panel panel-body">
+                                        <div class="city-buttons-container">
+                                            {% for city in cityList %}
+                                            <button class="btn btn-primary{% if city == default_city %} active{% endif %}" onclick="handleAnalysisCityClick('{{ city }}')">{{ city }}</button>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-8">
+                                <div class="panel panel-default">
+                                    <div class="panel panel-heading">
+                                        <h3 class="panel-title">城市空气质量分析</h3>
+                                    </div>
+                                    <div class="panel panel-body">
+                                        <div id="part2" style="width: 100%;height: 400px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </section>
+        <script>
+            document.getElementById('airQualityForm').addEventListener('submit',function (event){
+               event.preventDefault()
+               const formData = new FormData(this)
+               const params = new URLSearchParams(formData).toString()
+
+               $.ajax({
+                   url: `${this.action}?${params}`,
+                   type: 'GET',
+                   dataType: 'json',
+                   success: function (res) {
+                      if(res.status === '200'){
+                      const aqi = res.data.AQI
+                      let color = getAqiColor(aqi);
+                       $('#airQualityPanel').html(`
+                       <div class="air-quality-level" style="color:${color}">
+                                          ${res.data.airQuality} AQI ${res.data.AQI}
+                                      </div>
+
+                                      <div class="air-quality-details">
+                                          <div class="row">
+                                              <div class="col-md-6">
+                                                  <p>PM2.5:<strong> ${res.data.PM}</strong></p>
+                                                  <p>PM10:<strong> ${res.data.PM10}</strong></p>
+                                                  <p>So2:<strong> ${res.data.So2}</strong></p>
+                                              </div>
+                                              <div class="col-md-6">
+                                                  <p>NO2:<strong> ${res.data.No2}</strong></p>
+                                                  <p>CO:<strong> ${res.data.Co}</strong></p>
+                                                  <p>O3:<strong> ${res.data.O3}</strong></p>
+                                              </div>
+                                          </div>
+                                      </div>
+
+                      `)
+                      }else{
+                           alert('请求错误')
+                      }
+
+                   },error: function () {
+                            alert('请求错误')
+                   }
+                })
+            })
+
+            // 辅助函数
+            function getAqiColor(aqi) {
+                if (aqi <= 50) return '#4CAF50';
+                if (aqi <= 100) return '#FFC107';
+                if (aqi <= 150) return '#FF9800';
+                if (aqi <= 200) return '#F44336';
+                if (aqi <= 300) return '#9C27B0';
+                return '#795548';
+            }
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+        <script>
+        var chartDom = document.getElementById('part1');
+        var myChart = echarts.init(chartDom);
+
+        var option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { type: 'shadow' }
+            },
+            grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+            xAxis: [{
+                type: 'category',
+                data: {{ name_list1|safe }},
+                axisTick: { alignWithLabel: true }
+            }],
+            yAxis: [{ type: 'value' }],
+            series: [{
+                name: '平均AQI指数',
+                type: 'bar',
+                barWidth: '60%',
+                data: {{ value_list1|safe }}
+            }]
+        };
+
+
+        myChart.setOption(option);
+
+
+        window.addEventListener('resize', function() {
+            myChart.resize();
+        });
+        </script>
+         <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+         <script>
+            var cityAnalysisDom = document.getElementById('part2');
+            var cityAnalysisChart = echarts.init(cityAnalysisDom);
+            var cityAnalysisoption;
+
+            cityAnalysisoption = {
+                xAxis: {
+                    type: 'category',
+                    data: ['PM2.5', 'PM10', 'So2', 'No2', 'Co', 'O3']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        data: [
+                            {{ city_analysis_data.avg_PM|default:"0" }},
+                            {{ city_analysis_data.avg_PM10|default:"0" }},
+                            {{ city_analysis_data.avg_So2|default:"0" }},
+                            {{ city_analysis_data.avg_No2|default:"0" }},
+                            {{ city_analysis_data.avg_Co|default:"0" }},
+                            {{ city_analysis_data.avg_O3|default:"0" }},
+                        ],
+                        type: 'line',
+                        smooth: true
+                    }
+                ]
+            };
+
+            cityAnalysisoption && cityAnalysisChart.setOption(cityAnalysisoption);
+         </script>
+         <script>
+              function handleAnalysisCityClick(city) {
+                  $('.city-buttons-container .btn-primary').removeClass('active')
+                  $(event.target).addClass('active')
+                  $.ajax({
+                      url: `{% url 'home:get_city_analysis' %}?city=${city}`,
+                      type: 'GET',
+                      dataType: 'json',
+                      success: function (res) {
+                          if (res.status === '200') {
+                              cityAnalysisChart.setOption({
+                                  series: [{
+                                      data: [
+                                          res.data.avg_PM,
+                                          res.data.avg_PM10,
+                                          res.data.avg_So2,
+                                          res.data.avg_No2,
+                                          res.data.avg_Co,
+                                          res.data.avg_O3
+                                      ]
+                                  }]
+                              });
+                          }
+                      }
+                  })
+              }
+         </script>
+
+
+{% endblock %}

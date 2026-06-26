@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="prediction-container">
+    <div class="prediction-card shadow-lg">
+         <div class="section__title--2 text-center mb-5">
+             <h2>空气质量预测<span class="title__line"></span></h2>
+             <p>输入当前空气质量指标，预测未来空气质量指数(AQI)</p>
+         </div>
+
+         <form id="prediction-form" method="post">
+             {% csrf_token %}
+             <div class="row">
+
+                 <div class="col-md-6">
+                     <div class="form-group">
+                         <label for="pm25">PM2.5(μg/m³)</label>
+                         <input type="number" step="0.01" class="form-control" id="pm25" name="pm25" required>
+                     </div>
+                     <div class="form-group">
+                         <label for="So2">So2(μg/m³)</label>
+                         <input type="number" step="0.01" class="form-control" id="So2" name="So2" required>
+                     </div>
+                     <div class="form-group">
+                         <label for="No2">No2(μg/m³)</label>
+                         <input type="number" step="0.01" class="form-control" id="No2" name="No2" required>
+                     </div>
+                 </div>
+
+
+                 <div class="col-md-6">
+                     <div class="form-group">
+                         <label for="season">季节</label>
+                         <select name="season" class="form-control" id="season" required>
+                             <option value="">请选择</option>
+                             <option value="spring">春季</option>
+                             <option value="summer">夏季</option>
+                             <option value="autumn">秋季</option>
+                             <option value="winter">冬季</option>
+                         </select>
+                     </div>
+                     <div class="form-group">
+                         <label for="PM10">PM10(μg/m³)</label>
+                         <input type="number" step="0.01" class="form-control" id="PM10" name="PM10" required>
+                     </div>
+                     <div class="form-group">
+                         <label for="Co">Co(mg/m³)</label>
+                         <input type="number" step="0.01" class="form-control" id="Co" name="Co" required>
+                     </div>
+                 </div>
+             </div>
+
+             <div class="text-center mt-4">
+                 <button type="submit" class="btn btn-primary btn-lg">
+                     <span class="btn-text">预测空气质量</span>
+                 </button>
+             </div>
+         </form>
+
+        <div id="result-container" class="mt-5 text-center" style="display: none">
+            <h3 class="mb-4">预测结果</h3>
+            <div class="aqi-result">
+                <span id="aqi-value">0</span>
+                <div id="aqi-category" class="aqi-category"></div>
+            </div>
+            <div id="aqi-description" class="aqi-description"></div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+<script>
+$(document).ready(function () {
+    $('#prediction-form').submit(function (e) {
+        e.preventDefault();
+        $('.btn-text').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 预测中...');
+        $('button[type="submit"]').prop('disabled', true);
+
+        $.ajax({
+            url: "{% url 'home:forecast' %}",
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function (response) {
+               if(response.status === '200'){
+               const aqi = response.result;
+               $('#aqi-value').text(aqi);
+
+               // 根据AQI值设置类别和颜色
+               let category = '', description = '', color = '';
+               if (aqi <= 50) {
+                   category = '优';
+                   description = '空气质量令人满意，基本无空气污染。各类人群可正常活动。';
+                   color = '#009966';
+               } else if (aqi <= 100) {
+                   category = '良';
+                   description = '空气质量可接受，但某些污染物可能对极少数异常敏感人群健康有较弱影响。极少数异常敏感人群应减少户外活动。';
+                   color = '#FFDE33';
+               } else if (aqi <= 150) {
+                   category = '轻度污染';
+                   description = '易感人群症状有轻度加剧，健康人群出现刺激症状。儿童、老年人及心脏病、呼吸系统疾病患者应减少长时间、高强度的户外锻炼。';
+                   color = '#FF9933';
+               } else if (aqi <= 200) {
+                   category = '中度污染';
+                   description = '进一步加剧易感人群症状，可能对健康人群心脏、呼吸系统有影响。儿童、老年人及心脏病、呼吸系统疾病患者避免长时间、高强度的户外锻炼，一般人群适量减少户外运动。';
+                   color = '#CC0033';
+               } else if (aqi <= 300) {
+                   category = '重度污染';
+                   description = '心脏病和肺病患者症状显著加剧，运动耐受力降低，健康人群普遍出现症状。儿童、老年人和心脏病、肺病患者应停留在室内，停止户外运动，一般人群减少户外运动。';
+                   color = '#660099';
+               } else {
+                   category = '严重污染';
+                   description = '健康人群运动耐受力降低，有明显强烈症状，提前出现某些疾病。儿童、老年人和病人应当留在室内，避免体力消耗，一般人群应避免户外活动。';
+                   color = '#7E0023';
+               }
+
+               $('#aqi-category').text(category).css('background-color', color);
+               $('#aqi-description').text(description);
+               $('#result-container').fadeIn();
+               }
+            },
+            error: function () {
+                alert('请求失败');
+            },
+            complete: function () {
+                $('.btn-text').text('预测空气质量');
+                $('button[type="submit"]').prop('disabled', false);
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

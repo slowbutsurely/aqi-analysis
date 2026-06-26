@@ -1,0 +1,690 @@
+/* 基于python的空气质量数据分析与预测系统 - 统一样式文件 */
+
+/* ===== 全局样式 ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f8f9fa;
+}
+
+/* ===== Logo样式 ===== */
+.logo h5 {
+    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #3498db, #2ecc71);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    padding: 10px 0;
+    margin: 0;
+}
+
+/* ===== 头像下拉菜单 ===== */
+.header__account {
+    position: relative;
+    display: inline-block;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.user-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    min-width: 160px;
+    padding: 10px 0;
+    margin-top: 10px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: none;
+}
+
+.user-menu.show {
+    display: block;
+}
+
+.user-menu a {
+    display: block;
+    padding: 8px 20px;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.user-menu a:hover {
+    background: #f5f5f5;
+    color: #4285f4;
+}
+
+.user-menu i {
+    margin-right: 8px;
+    width: 18px;
+    text-align: center;
+}
+
+.user-divider {
+    height: 1px;
+    margin: 5px 0;
+    background: #eee;
+}
+
+/* ===== 面板样式 ===== */
+.panel {
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    border: none;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.panel:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.panel-heading {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    padding: 15px 20px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.panel-title {
+    color: #495057;
+    font-weight: 600;
+    font-size: 18px;
+    margin: 0;
+}
+
+.panel-body {
+    padding: 20px;
+    background-color: #fff;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+/* ===== 表单控件样式 ===== */
+.form-control {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    padding: 8px 12px;
+    box-shadow: none;
+    transition: border-color 0.3s;
+    width: 100%;
+    font-size: 15px;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.1);
+    outline: none;
+}
+
+label {
+    color: #495057;
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* ===== 按钮样式 ===== */
+.btn-primary {
+    background-color: #4285f4;
+    border-color: #4285f4;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-weight: 500;
+    transition: all 0.3s;
+    margin: 5px;
+    min-width: 80px;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: #3367d6;
+    border-color: #3367d6;
+    transform: translateY(-1px);
+}
+
+.btn-primary.active {
+    background-color: #3367d6;
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.5);
+}
+
+/* ===== 标题样式 ===== */
+.section__title--2 h2 {
+    color: #343a40;
+    font-weight: 700;
+    margin-bottom: 15px;
+    font-size: 28px;
+}
+
+.section__title--2 p {
+    color: #6c757d;
+    font-size: 16px;
+}
+
+.title__line {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #007bff, #00b4ff);
+    border-radius: 2px;
+}
+
+/* ===== 城市按钮容器 ===== */
+.city-buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 10px;
+}
+
+/* ===== 空气质量信息样式 ===== */
+.air-quality-info {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.air-quality-level {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.air-quality-details p {
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+/* ===== 图表容器 ===== */
+.chart-container {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px; /* 添加间距 */
+    max-width: 800px; /* 限制宽度 */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ===== 加载动画 ===== */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 0, 0, .1);
+    border-radius: 50%;
+    border-top-color: #4285f4;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===== 个人信息管理样式 ===== */
+.profile-container {
+    max-width: 1200px; /* 限制最大宽度 */
+    margin: 30px auto; /* 上下间距30px，水平居中 */
+    padding: 30px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+.profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.profile-header h2 {
+    color: #333;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.profile-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.avatar-section {
+    grid-column: span 2;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.avatar-preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #f0f0f0;
+    margin-bottom: 15px;
+}
+
+.avatar-upload-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #4a90e2;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.avatar-upload-btn:hover {
+    background: #3a7bc8;
+}
+
+.btn-submit {
+    grid-column: span 2;
+    background: #4a90e2;
+    color: white;
+    border: none;
+    padding: 12px 0;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background: #3a7bc8;
+}
+
+.message {
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+/* ===== 数据展示样式 ===== */
+.data-overview {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.search-form {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.search-controls {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.search-controls input {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    flex: 1;
+    min-width: 150px;
+    transition: all 0.3s;
+}
+
+.search-controls input:focus {
+    border-color: #4285f4;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+}
+
+.search-controls button {
+    background: #4285f4;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.search-controls button:hover {
+    background: #3367d6;
+    transform: translateY(-1px);
+}
+
+.reset-btn {
+    padding: 10px 20px;
+    background: #e0e0e0;
+    color: #333;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.reset-btn:hover {
+    background: #d0d0d0;
+    transform: translateY(-1px);
+}
+
+/* ===== 表格样式 ===== */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.data-table th {
+    background: #4285f4;
+    color: white;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 500;
+}
+
+.data-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.data-table tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+.data-table tr:hover {
+    background: #f1f5ff;
+}
+
+/* ===== 分页样式 ===== */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.pagination a, .pagination span {
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.pagination a {
+    color: #4285f4;
+    border: 1px solid #ddd;
+}
+
+.pagination a:hover {
+    background: #f1f5ff;
+    border-color: #4285f4;
+}
+
+.pagination .current {
+    color: #333;
+    font-weight: 500;
+}
+
+/* ===== 空数据提示 ===== */
+.no-data {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    font-size: 16px;
+}
+
+/* ===== 数据可视化样式 ===== */
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+    margin-bottom: 20px;
+}
+
+.grid-container {
+
+    flex-wrap: wrap;
+    gap: 20px; /* 设置间距 */
+    margin: 0 auto;
+    max-width: 1200px; /* 限制最大宽度 */
+}
+.grid-box {
+    box-sizing: border-box;
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+/* ===== 全宽盒子样式 ===== */
+.grid-box.full-width {
+    flex: 0 0 100%; /* 独占一行 */
+}
+
+/* ===== 半宽盒子样式 ===== */
+.grid-box.half-width {
+    flex: 0 0 calc(50% - 10px); /* 各占一半，减去间距的一半 */
+}
+
+.grid-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== 预测页面样式 ===== */
+.prediction-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 1200px;
+}
+
+.prediction-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 50px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.prediction-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.prediction-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+}
+
+#result-container {
+    background: rgba(245, 247, 250, 0.8);
+    border-radius: 15px;
+    padding: 30px;
+    margin-top: 40px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.aqi-result {
+    font-size: 4rem;
+    font-weight: 800;
+    color: #2d3e50;
+    margin: 20px 0;
+}
+
+.aqi-category {
+    font-size: 1.5rem;
+    padding: 12px 30px;
+    border-radius: 50px;
+    display: inline-block;
+    color: white;
+    font-weight: bold;
+    margin: 20px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.aqi-description {
+    font-size: 1.2rem;
+    color: #555;
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* ===== AI分析结果样式 ===== */
+.analysis-result {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 25px;
+    margin-top: 30px;
+    border-left: 5px solid #4facfe;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.analysis-result h4 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.analysis-result h4::before {
+    content: '📊';
+    margin-right: 10px;
+}
+
+.analysis-content {
+    line-height: 1.8;
+    color: #34495e;
+    font-size: 1.05rem;
+}
+
+.alert-danger {
+    border-radius: 8px;
+    padding: 15px;
+    background: #ffecec;
+    color: #e74c3c;
+    border-left: 5px solid #e74c3c;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== 响应式设计 ===== */
+@media (max-width: 768px) {
+    .panel {
+        margin-bottom: 20px;
+        height: auto !important;
+    }
+    
+    .profile-form {
+        grid-template-columns: 1fr;
+    }
+
+    .avatar-section, .btn-submit {
+        grid-column: span 1;
+    }
+    
+    .data-table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .search-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-controls input,
+    .search-controls button,
+    .reset-btn {
+        width: 100%;
+    }
+    
+    .prediction-card {
+        padding: 25px;
+    }
+
+    .aqi-result {
+        font-size: 3rem;
+    }
+
+    .aqi-category {
+        font-size: 1.2rem;
+        padding: 10px 20px;
+    }
+
+    .aqi-description {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .prediction-card {
+        padding: 30px;
+    }
+
+    .section__title--2 h2 {
+        font-size: 2.2rem;
+    }
+
+    .section__title--2 p {
+        font-size: 1.1rem;
+    }
+}

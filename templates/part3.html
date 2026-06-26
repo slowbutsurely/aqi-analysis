@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="profile-container" style="...">
+    <div class="profile-header">
+        <h2>气体分析</h2>
+    </div>
+
+
+    <div class="grid-container">
+        <div class="grid-box">
+            <div class="grid-content">
+                <h3>So2和No2最大值</h3>
+                <div id="part6" style="width: 100%;height: 500px;"></div>
+            </div>
+        </div>
+
+        <div class="grid-box">
+            <div class="grid-content">
+                <h3>Co浓度分类统计</h3>
+                <div id="part7" style="width: 100%;height: 500px;"></div>
+            </div>
+        </div>
+        <div class="grid-box">
+            <div class="grid-content">
+                <h3>O3浓度分类统计</h3>
+                <div id="part8" style="width: 100%;height: 500px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+
+<script>
+$(function(){
+    // 1. SO2和NO2最大值折线图
+    var chart6 = echarts.init(document.getElementById('part6'));
+    var option6 = {
+        tooltip: { trigger: 'axis' },
+        legend: { data: ['SO2最大值', 'NO2最大值'] },
+        xAxis: { type: 'category', data: {{ name_list1|safe }} },
+        yAxis: { type: 'value' },
+        series: [
+            { name: 'SO2最大值', type: 'line', data: {{ maxSo2_list1|safe }} },
+            { name: 'NO2最大值', type: 'line', data: {{ maxNo2_list1|safe }} }
+        ]
+    };
+    chart6.setOption(option6);
+
+    // 2. CO浓度饼图
+    var chart7 = echarts.init(document.getElementById('part7'));
+    var option7 = {
+        tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
+        legend: { orient: 'vertical', left: 'left' },
+        series: [
+            {
+                name: 'CO浓度',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                data: {{ result1|safe }}
+            }
+        ]
+    };
+    chart7.setOption(option7);
+
+    // 3. O3浓度饼图
+    var chart8 = echarts.init(document.getElementById('part8'));
+    var option8 = {
+        tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
+        legend: { orient: 'vertical', left: 'left' },
+        series: [
+            {
+                name: 'O3浓度',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                data: {{ result2|safe }}
+            }
+        ]
+    };
+    chart8.setOption(option8);
+
+    // 窗口自适应
+    $(window).resize(function(){
+        chart6.resize();
+        chart7.resize();
+        chart8.resize();
+    })
+});
+</script>
+
+{% endblock %}

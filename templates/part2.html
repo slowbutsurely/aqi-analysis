@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="profile-container" style="...">
+    <div class="profile-header">
+        <h2>月度分析</h2>
+    </div>
+
+    <!-- 城市+年份+月份选择表单 -->
+    <form id="analysisForm" action="{% url 'home:part2' %}" method="post">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group">
+                <label for="city">选择城市</label>
+                <select name="city" id="city" class="form-control">
+                    {% for city in cityList %}
+                    <option value="{{ city }}" {% if city == select_city %}selected{% endif %}>{{ city }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="year">选择年份</label>
+                <select name="year" id="year" class="form-control">
+                    {% for year in yearList %}
+                    <option value="{{ year }}" {% if year == select_year %}selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="month">选择月份</label>
+                <select name="month" id="month" class="form-control">
+                    {% for month in monthList %}
+                    <option value="{{ month }}" {% if month == select_month %}selected{% endif %}>{{ month }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">提交</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="grid-container">
+        <!-- 图表1：每日AQI走势 柱状+折线混合图 part10 -->
+        <div class="grid-box">
+            <div class="grid-content">
+                <h3>{{ select_city }}-{{ select_year }}-{{ select_month }} AQI每日分析</h3>
+                <div id="part10" style="width: 100%;height: 500px;"></div>
+            </div>
+        </div>
+
+        <!-- 图表2：空气质量占比饼图 part5 -->
+        <div class="grid-box">
+            <div class="grid-content">
+                <h3>{{ select_city }}-{{ select_year }} 空气质量等级占比</h3>
+                <div id="part5" style="width: 100%;height: 500px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 引入依赖：jQuery + ECharts CDN -->
+<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+
+<script>
+$(function(){
+    // ====================== 图表1：part10 每日AQI混合图（原有代码完全不动！） ======================
+    var chart1 = echarts.init(document.getElementById('part10'));
+    var option1 = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                crossStyle: {
+                    color: '#999'
+                }
+            }
+        },
+        toolbox: {
+            feature: {
+                dataView: { show: true, readOnly: false },
+                magicType: { show: true, type: ['line', 'bar'] },
+                restore: { show: true },
+                saveAsImage: { show: true }
+            }
+        },
+        legend: {
+            data: ['AQI指数', '空气质量等级']
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: {{ day_list|safe }},
+                axisPointer: {
+                    type: 'shadow'
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: 'AQI指数',
+                axisLabel: {
+                    formatter: '{value}'
+                }
+            },
+            {
+                type: 'value',
+                name: '污染等级数值',
+                axisLabel: {
+                    formatter: '{value}'
+                }
+            }
+        ],
+        series: [
+            {
+                name: 'AQI指数',
+                type: 'bar',
+                data: {{ aqi_list|safe }}
+            },
+            {
+                name: '空气质量等级',
+                type: 'line',
+                yAxisIndex: 1,
+                data: {{ rank_list|safe }}
+            }
+        ]
+    };
+    chart1.setOption(option1);
+
+
+    // ====================== 【全新整洁版饼图】国标AQI等级自动归类合并 ======================
+    var chart2 = echarts.init(document.getElementById('part5'));
+    // 拿到你后端所有日数据的AQI数组
+    const aqiAllData = {{ aqi_list|safe }};
+
+    // 国标空气质量6大等级定义
+    const levelRule = [
+        { name: '优(0-50)', min: 0, max: 50, color: '#52c41a' },
+        { name: '良(51-100)', min: 51, max: 100, color: '#faad14' },
+        { name: '轻度污染(101-150)', min: 101, max: 150, color: '#ff7d00' },
+        { name: '中度污染(151-200)', min: 151, max: 200, color: '#f5222d' },
+        { name: '重度污染(201-300)', min: 201, max: 300, color: '#722ed1' },
+        { name: '严重污染(>300)', min: 301, max: Infinity, color: '#1f2329' }
+    ];
+
+    // 初始化每个等级天数为0
+    let levelCount = {};
+    levelRule.forEach(item => {
+        levelCount[item.name] = 0;
+    });
+
+    // 自动遍历所有AQI，匹配等级、统计天数
+    aqiAllData.forEach(aqi => {
+        for (let rule of levelRule) {
+            if (aqi >= rule.min && aqi <= rule.max) {
+                levelCount[rule.name]++;
+                break;
+            }
+        }
+    });
+
+    // 转换成ECharts饼图格式，过滤掉天数为0的空等级
+    const pieData = [];
+    levelRule.forEach(rule => {
+        const dayNum = levelCount[rule.name];
+        if (dayNum > 0) { // 没有天数的等级直接隐藏，不显示
+            pieData.push({
+                name: rule.name,
+                value: dayNum,
+                itemStyle: { color: rule.color }
+            })
+        }
+    });
+
+    var option2 = {
+        title: { text: '当月空气质量等级天数占比' },
+        tooltip: {
+            trigger: 'item',
+            formatter: '{b} : {c}天 ({d}%)'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            type: 'scroll' // 图例超出自动滚动
+        },
+        series: [
+            {
+                name: '天数',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
+                itemStyle: {
+                    borderRadius: 10,
+                    borderColor: '#fff',
+                    borderWidth: 2
+                },
+                label: {
+                    show: true,
+                    formatter: '{b}: {c}天 ({d}%)'
+                },
+                data: pieData
+            }
+        ]
+    };
+    chart2.setOption(option2);
+
+
+    // 窗口自适应
+    $(window).resize(function () {
+        chart1.resize();
+        chart2.resize();
+    });
+});
+</script>
+
+{% endblock %}
