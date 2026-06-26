@@ -1,6 +1,5 @@
 import joblib
 import numpy as np
-from pyexpat import features
 
 
 def predict(pm25,PM10,So2,No2,Co,season):
@@ -16,10 +15,6 @@ def predict(pm25,PM10,So2,No2,Co,season):
         #使用模型预测
         pred = model.predict(features)
         return round(pred[0],0)
-
-
-
-
 
     except Exception as e:
         return ValueError(f'预测失败：{str(e)}')

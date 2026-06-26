@@ -11,20 +11,15 @@ import re
 import time
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-from pyexpat.errors import messages
 from django.contrib import messages
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 import json
 from Get_QianFan import getQianFan
 
 from .models import AirQuality
 # Create your views here.
 
-
-
-
 from django.views.decorators.csrf import csrf_exempt
-import json
 
 @csrf_exempt
 def user_login(request):
